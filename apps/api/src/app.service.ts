@@ -55,7 +55,7 @@ export class AppService {
       }
       const html = await response.text();
 
-      void this.updateStatus(analysis, AnalysisStatus.ONGOING);
+      await this.updateStatus(analysis, AnalysisStatus.ONGOING);
 
       const doc = this.parser.parseFromString(html);
       const results = this.analyser.analyse(doc);
