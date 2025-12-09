@@ -125,7 +125,7 @@ watch(data, (newData) => {
       <div class="modal-content" @click.stop>
         <div class="modal-header">
           <h2>Detalhes da Análise</h2>
-          <button class="close-button" @click="closeAnalysis">×</button>
+          <button class="close-button" @click="closeAnalysis" aria-label="Fechar detalhes">×</button>
         </div>
         <p><strong>URL:</strong> {{ selectedAnalysis.url }}</p>
         <p>
