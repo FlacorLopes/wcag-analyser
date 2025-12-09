@@ -4,18 +4,13 @@ import { RouterLink } from 'vue-router'
 import { useWebSocket } from '@vueuse/core'
 import { useApiFetch } from '../composables/useApiFetch'
 import AnalysisResults from '../components/AnalysisResults.vue'
-
-interface RuleResult {
-  passed: boolean
-  message: string
-  details?: string[]
-}
+import type { RuleResult } from '@wcag-analyser/shared'
 
 interface AnalysisResult {
   id: string
   url: string
   status: string
-  results?: Record<string, RuleResult>
+  results?: Record<string, RuleResult<any>>
 }
 
 const payload = reactive({
@@ -24,7 +19,7 @@ const payload = reactive({
 const validationError = ref<string | null>(null)
 const currentAnalysisId = ref<string | null>(null)
 const analysisStatus = ref<string | null>(null)
-const results = ref<Record<string, RuleResult> | null>(null)
+const results = ref<Record<string, RuleResult<any>> | null>(null)
 
 const getWsUrl = () => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
