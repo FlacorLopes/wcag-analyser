@@ -71,4 +71,29 @@ describe('AppController (e2e)', () => {
     expect(response.body.results['img-alt-check'].passed).toBe(false);
     expect(response.body.results['input-label-check'].passed).toBe(false);
   });
+
+  it('/api/analyses (GET) - should return paginated analyses', async () => {
+    const urls = [
+      `${baseUrl}/test-fixtures/accessible.html`,
+      `${baseUrl}/test-fixtures/not-accessible.html`,
+      `${baseUrl}/test-fixtures/not-accessible.html`,
+    ];
+
+    for (const url of urls) {
+      await request(app.getHttpServer()).post('/api/analyze').send({ url });
+    }
+
+    const response = await request(app.getHttpServer())
+      .get('/api/analyses')
+      .query({ page: 1, limit: 2 })
+      .expect(200);
+
+    expect(response.body).toHaveProperty('items');
+    expect(response.body.items).toHaveLength(2);
+    expect(response.body).toHaveProperty('total');
+    expect(response.body.total).toBeGreaterThanOrEqual(3);
+    expect(response.body).toHaveProperty('page', 1);
+    expect(response.body).toHaveProperty('limit', 2);
+    expect(response.body).toHaveProperty('totalPages');
+  });
 });

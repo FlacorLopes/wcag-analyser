@@ -53,4 +53,44 @@ describe('AppController', () => {
       expect(result).toEqual(mockResult);
     });
   });
+
+  describe('GET /api/analyses', () => {
+    it('should call appService.getAnalyses with default pagination', async () => {
+      const mockResult = {
+        items: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      };
+
+      const spy = vi
+        .spyOn(appService, 'getAnalyses')
+        .mockResolvedValue(mockResult);
+
+      const result = await appController.getAnalyses();
+
+      expect(spy).toHaveBeenCalledWith(1, 10);
+      expect(result).toEqual(mockResult);
+    });
+
+    it('should call appService.getAnalyses with provided pagination', async () => {
+      const mockResult = {
+        items: [],
+        total: 0,
+        page: 2,
+        limit: 20,
+        totalPages: 0,
+      };
+
+      const spy = vi
+        .spyOn(appService, 'getAnalyses')
+        .mockResolvedValue(mockResult);
+
+      const result = await appController.getAnalyses(2, 20);
+
+      expect(spy).toHaveBeenCalledWith(2, 20);
+      expect(result).toEqual(mockResult);
+    });
+  });
 });
