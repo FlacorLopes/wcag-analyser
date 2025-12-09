@@ -1,10 +1,11 @@
 import { DomDocument } from '../dom/lib';
 import { RuleResult, WCAGRule } from './lib';
+import { TitleRuleDetails } from '@wcag-analyser/shared';
 
-export class TitleRule implements WCAGRule {
+export class TitleRule implements WCAGRule<TitleRuleDetails> {
   name = 'title-check';
 
-  analyse(doc: DomDocument): RuleResult {
+  analyse(doc: DomDocument): RuleResult<TitleRuleDetails> {
     const title = doc.querySelector('title');
     const titleText = title?.textContent?.trim();
 
@@ -13,7 +14,7 @@ export class TitleRule implements WCAGRule {
       message: titleText
         ? 'Title exists and is not empty'
         : 'Title missing or empty',
-      details: { titleText: titleText || null },
+      details: { title: titleText || null },
     };
   }
 }

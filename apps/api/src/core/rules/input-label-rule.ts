@@ -1,10 +1,11 @@
 import { DomDocument } from '../dom/lib';
 import { RuleResult, WCAGRule } from './lib';
+import { InputLabelRuleDetails } from '@wcag-analyser/shared';
 
-export class InputLabelRule implements WCAGRule {
+export class InputLabelRule implements WCAGRule<InputLabelRuleDetails> {
   name = 'input-label-check';
 
-  analyse(doc: DomDocument): RuleResult {
+  analyse(doc: DomDocument): RuleResult<InputLabelRuleDetails> {
     const inputs = doc.getElementsByTagName('input');
     const withoutLabel = inputs.filter((input) => {
       const id = input.getAttribute('id');
@@ -23,8 +24,8 @@ export class InputLabelRule implements WCAGRule {
           ? 'All inputs have associated labels'
           : `${withoutLabel.length} of ${inputs.length} inputs missing explicit label association`,
       details: {
-        total: inputs.length,
-        withoutLabel: withoutLabel.length,
+        totalInputs: inputs.length,
+        inputsWithoutLabel: withoutLabel.length,
       },
     };
   }

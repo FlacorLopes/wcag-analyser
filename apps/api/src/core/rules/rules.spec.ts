@@ -25,7 +25,7 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(true);
       expect(result.message).toBe('Title exists and is not empty');
-      expect(result.details.titleText).toBe('My Page');
+      expect(result.details?.title).toBe('My Page');
     });
 
     it('should fail when title is missing', () => {
@@ -41,7 +41,7 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(false);
       expect(result.message).toBe('Title missing or empty');
-      expect(result.details.titleText).toBeNull();
+      expect(result.details?.title).toBeNull();
     });
 
     it('should fail when title is empty', () => {
@@ -59,7 +59,7 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(false);
       expect(result.message).toBe('Title missing or empty');
-      expect(result.details.titleText).toBeNull();
+      expect(result.details?.title).toBeNull();
     });
   });
 
@@ -81,8 +81,8 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(true);
       expect(result.message).toBe('All images have alt attributes');
-      expect(result.details.total).toBe(2);
-      expect(result.details.withoutAlt).toBe(0);
+      expect(result.details?.totalImages).toBe(2);
+      expect(result.details?.imagesWithoutAlt).toBe(0);
     });
 
     it('should fail when images are missing alt attribute', () => {
@@ -103,8 +103,8 @@ describe('WCAG Rules', () => {
       expect(result.message).toBe(
         '2 of 3 images missing or have empty alt attribute',
       );
-      expect(result.details.total).toBe(3);
-      expect(result.details.withoutAlt).toBe(2);
+      expect(result.details?.totalImages).toBe(3);
+      expect(result.details?.imagesWithoutAlt).toBe(2);
     });
 
     it('should fail when images have empty alt attribute', () => {
@@ -124,8 +124,8 @@ describe('WCAG Rules', () => {
       expect(result.message).toBe(
         '2 of 2 images missing or have empty alt attribute',
       );
-      expect(result.details.total).toBe(2);
-      expect(result.details.withoutAlt).toBe(2);
+      expect(result.details?.totalImages).toBe(2);
+      expect(result.details?.imagesWithEmptyAlt).toBe(2);
     });
 
     it('should pass when there are no images', () => {
@@ -141,8 +141,8 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(true);
-      expect(result.details.total).toBe(0);
-      expect(result.details.withoutAlt).toBe(0);
+      expect(result.details?.totalImages).toBe(0);
+      expect(result.details?.imagesWithoutAlt).toBe(0);
     });
   });
 
@@ -167,8 +167,8 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(true);
       expect(result.message).toBe('All inputs have associated labels');
-      expect(result.details.total).toBe(2);
-      expect(result.details.withoutLabel).toBe(0);
+      expect(result.details?.totalInputs).toBe(2);
+      expect(result.details?.inputsWithoutLabel).toBe(0);
     });
 
     it('should fail when inputs are missing id attribute', () => {
@@ -190,8 +190,8 @@ describe('WCAG Rules', () => {
       expect(result.message).toBe(
         '1 of 2 inputs missing explicit label association',
       );
-      expect(result.details.total).toBe(2);
-      expect(result.details.withoutLabel).toBe(1);
+      expect(result.details?.totalInputs).toBe(2);
+      expect(result.details?.inputsWithoutLabel).toBe(1);
     });
 
     it('should fail when labels do not match input ids', () => {
@@ -214,8 +214,8 @@ describe('WCAG Rules', () => {
       expect(result.message).toBe(
         '2 of 2 inputs missing explicit label association',
       );
-      expect(result.details.total).toBe(2);
-      expect(result.details.withoutLabel).toBe(2);
+      expect(result.details?.totalInputs).toBe(2);
+      expect(result.details?.inputsWithoutLabel).toBe(2);
     });
 
     it('should pass when there are no inputs', () => {
@@ -231,8 +231,8 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(true);
-      expect(result.details.total).toBe(0);
-      expect(result.details.withoutLabel).toBe(0);
+      expect(result.details?.totalInputs).toBe(0);
+      expect(result.details?.inputsWithoutLabel).toBe(0);
     });
 
     it('should handle mixed scenarios correctly', () => {
@@ -253,8 +253,8 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(false);
-      expect(result.details.total).toBe(3);
-      expect(result.details.withoutLabel).toBe(2);
+      expect(result.details?.totalInputs).toBe(3);
+      expect(result.details?.inputsWithoutLabel).toBe(2);
     });
   });
 });

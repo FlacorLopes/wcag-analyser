@@ -1,12 +1,9 @@
 import { DomDocument } from '../dom/lib';
+import { RuleResult } from '@wcag-analyser/shared';
 
-export interface RuleResult {
-  passed: boolean;
-  message?: string;
-  details?: any;
-}
+export type { RuleResult };
 
-export interface WCAGRule {
+export interface WCAGRule<T = any> {
   name: string;
-  analyse(doc: DomDocument): RuleResult;
+  analyse(doc: DomDocument): RuleResult<T>;
 }

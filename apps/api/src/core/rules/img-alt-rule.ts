@@ -1,24 +1,29 @@
 import { DomDocument } from '../dom/lib';
 import { RuleResult, WCAGRule } from './lib';
+import { ImgAltRuleDetails } from '@wcag-analyser/shared';
 
-export class ImgAltRule implements WCAGRule {
+export class ImgAltRule implements WCAGRule<ImgAltRuleDetails> {
   name = 'img-alt-check';
 
-  analyse(doc: DomDocument): RuleResult {
+  analyse(doc: DomDocument): RuleResult<ImgAltRuleDetails> {
     const images = doc.getElementsByTagName('img');
-    const withoutAlt = images.filter(
-      (img) => !img.hasAttribute('alt') || !img.getAttribute('alt')?.trim(),
+    const withoutAlt = images.filter((img) => !img.hasAttribute('alt'));
+    const emptyAlt = images.filter(
+      (img) => img.hasAttribute('alt') && !img.getAttribute('alt')?.trim(),
     );
 
+    const totalIssues = withoutAlt.length + emptyAlt.length;
+
     return {
-      passed: withoutAlt.length === 0,
+      passed: totalIssues === 0,
       message:
-        withoutAlt.length === 0
+        totalIssues === 0
           ? 'All images have alt attributes'
-          : `${withoutAlt.length} of ${images.length} images missing or have empty alt attribute`,
+          : `${totalIssues} of ${images.length} images missing or have empty alt attribute`,
       details: {
-        total: images.length,
-        withoutAlt: withoutAlt.length,
+        totalImages: images.length,
+        imagesWithoutAlt: withoutAlt.length,
+        imagesWithEmptyAlt: emptyAlt.length,
       },
     };
   }
