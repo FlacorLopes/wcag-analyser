@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { useApiFetch } from '../composables/useApiFetch'
 
 interface RuleResult {
@@ -118,7 +119,7 @@ function getRuleLabel(ruleKey: string) {
         </div>
       </div>
 
-      <button class="button-secondary">Ver análises anteriores</button>
+      <RouterLink to="/history" class="button-secondary">Ver análises anteriores</RouterLink>
     </div>
   </div>
 </template>
@@ -279,6 +280,9 @@ function getRuleLabel(ruleKey: string) {
   cursor: pointer;
   transition: all 0.2s;
   align-self: flex-start;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
 }
 
 .button-secondary:hover {
