@@ -69,7 +69,10 @@ watch(data, (newData) => {
     <div v-if="isFetching" class="loading">Carregando...</div>
 
     <div v-else-if="data" class="content">
-      <table>
+      <div v-if="data.items.length === 0" class="empty-state">
+        <p>Nenhuma análise encontrada.</p>
+      </div>
+      <table v-else>
         <thead>
           <tr>
             <th>URL</th>
@@ -109,7 +112,7 @@ watch(data, (newData) => {
         </tbody>
       </table>
 
-      <div class="pagination">
+      <div class="pagination" v-if="data.items.length > 0">
         <button :disabled="isFirstPage" @click="prev">Anterior</button>
         <span>Página {{ currentPage }} de {{ data?.totalPages || 1 }}</span>
         <button
@@ -236,5 +239,13 @@ button {
   cursor: pointer;
   padding: 0;
   line-height: 1;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 </style>

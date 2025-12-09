@@ -145,7 +145,14 @@ describe('HistoryView', () => {
       const user = userEvent.setup()
 
       mockData.value = {
-        items: [],
+        items: [
+          {
+            _id: '1',
+            url: 'https://example.com',
+            status: 'finished',
+            createdAt: new Date().toISOString(),
+          },
+        ],
         total: 20,
         page: 1,
         limit: 10,
@@ -164,7 +171,14 @@ describe('HistoryView', () => {
 
     it('should disable previous button on first page', async () => {
       mockData.value = {
-        items: [],
+        items: [
+          {
+            _id: '1',
+            url: 'https://example.com',
+            status: 'finished',
+            createdAt: new Date().toISOString(),
+          },
+        ],
         total: 20,
         page: 1,
         limit: 10,
@@ -179,7 +193,14 @@ describe('HistoryView', () => {
 
     it('should disable next button on last page', async () => {
       mockData.value = {
-        items: [],
+        items: [
+          {
+            _id: '1',
+            url: 'https://example.com',
+            status: 'finished',
+            createdAt: new Date().toISOString(),
+          },
+        ],
         total: 20,
         page: 2,
         limit: 10,
@@ -256,6 +277,25 @@ describe('HistoryView', () => {
       await user.click(closeButton)
 
       expect(screen.queryByText('Detalhes da Análise')).not.toBeInTheDocument()
+    })
+  })
+
+  suite('Empty State', () => {
+    it('should display empty message when no analyses found', async () => {
+      mockData.value = {
+        items: [],
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+      }
+
+      render(HistoryView)
+
+      await waitFor(() => {
+        expect(screen.getByText('Nenhuma análise encontrada.')).toBeInTheDocument()
+        expect(screen.queryByRole('table')).not.toBeInTheDocument()
+      })
     })
   })
 })
