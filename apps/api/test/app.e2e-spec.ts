@@ -4,12 +4,21 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
 import { beforeAll, afterAll, describe, it, expect } from 'vitest';
+import {
+  MongoDBContainer,
+  StartedMongoDBContainer,
+} from '@testcontainers/mongodb';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
   let baseUrl: string;
+  let mongoContainer: StartedMongoDBContainer;
 
   beforeAll(async () => {
+    // Start MongoDB container
+    mongoContainer = await new MongoDBContainer('mongo:7').start();
+    process.env.MONGO_URI = mongoContainer.getConnectionString();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -22,10 +31,15 @@ describe('AppController (e2e)', () => {
     const address = server.address();
     const port = typeof address === 'object' && address ? address.port : 3000;
     baseUrl = `http://127.0.0.1:${port}`;
-  });
+  }, 120000); // 2 minutes timeout for container startup
 
   afterAll(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
+    if (mongoContainer) {
+      await mongoContainer.stop();
+    }
   });
 
   it('/api/analyze (POST) - should analyze accessible HTML', async () => {
