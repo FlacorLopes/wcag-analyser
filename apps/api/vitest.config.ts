@@ -5,7 +5,6 @@ export default defineConfig({
   test: {
     globals: false,
     root: './',
-    include: ['**/*.e2e-spec.ts', '**/*.spec.ts'],
     hookTimeout: 120000, // Testcontainers can take time to start
     testTimeout: 30000,
   },

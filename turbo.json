@@ -8,6 +8,7 @@
     "lint": {},
     "test": {},
     "test:unit": {},
+    "test:e2e": {},
     "dev": {
       "cache": false,
       "persistent": true
