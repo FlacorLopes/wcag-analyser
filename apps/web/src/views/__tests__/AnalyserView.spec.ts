@@ -41,6 +41,13 @@ vi.mock('../../composables/useApiFetch', () => ({
   }),
 }))
 
+// Mock vue-router
+vi.mock('vue-router', () => ({
+  RouterLink: {
+    template: '<a><slot /></a>',
+  },
+}))
+
 const AnalyserView = await import('../AnalyserView.vue').then((m) => m.default)
 
 describe('AnalyserView', () => {
