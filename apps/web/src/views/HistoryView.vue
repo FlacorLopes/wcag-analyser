@@ -113,11 +113,12 @@ watch(data, (newData) => {
       </table>
 
       <div class="pagination" v-if="data.items.length > 0">
-        <button :disabled="isFirstPage" @click="prev">Anterior</button>
+        <button :disabled="isFirstPage" @click="prev" class="pagination-button">Anterior</button>
         <span>Página {{ currentPage }} de {{ data?.totalPages || 1 }}</span>
         <button
           :disabled="isLastPage || currentPage >= (data?.totalPages || 1)"
           @click="next"
+          class="pagination-button"
         >
           Próxima
         </button>
@@ -195,10 +196,31 @@ td {
   justify-content: center;
   gap: 1rem;
   align-items: center;
+  margin-top: 2rem;
 }
 
-button {
+.pagination-button {
   padding: 0.5rem 1rem;
+  background: white;
+  border: 1px solid #4a90e2;
+  border-radius: 8px;
+  color: #4a90e2;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background: #4a90e2;
+  color: white;
+}
+
+.pagination-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #ccc;
 }
 
 .modal-overlay {
