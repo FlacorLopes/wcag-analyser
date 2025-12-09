@@ -24,7 +24,7 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(true);
-      expect(result.message).toBe('Title exists and is not empty');
+      expect(result.message).toBe('Título existe e não está vazio');
       expect(result.details?.title).toBe('My Page');
     });
 
@@ -40,7 +40,7 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(false);
-      expect(result.message).toBe('Title missing or empty');
+      expect(result.message).toBe('Título ausente ou vazio');
       expect(result.details?.title).toBeNull();
     });
 
@@ -58,7 +58,7 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(false);
-      expect(result.message).toBe('Title missing or empty');
+      expect(result.message).toBe('Título ausente ou vazio');
       expect(result.details?.title).toBeNull();
     });
   });
@@ -80,7 +80,7 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(true);
-      expect(result.message).toBe('All images have alt attributes');
+      expect(result.message).toBe('Todas as imagens possuem atributo alt');
       expect(result.details?.totalImages).toBe(2);
       expect(result.details?.imagesWithoutAlt).toBe(0);
     });
@@ -101,7 +101,7 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(false);
       expect(result.message).toBe(
-        '2 of 3 images missing or have empty alt attribute',
+        '2 de 3 imagens não possuem ou têm atributo alt vazio',
       );
       expect(result.details?.totalImages).toBe(3);
       expect(result.details?.imagesWithoutAlt).toBe(2);
@@ -122,7 +122,7 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(false);
       expect(result.message).toBe(
-        '2 of 2 images missing or have empty alt attribute',
+        '2 de 2 imagens não possuem ou têm atributo alt vazio',
       );
       expect(result.details?.totalImages).toBe(2);
       expect(result.details?.imagesWithEmptyAlt).toBe(2);
@@ -166,7 +166,7 @@ describe('WCAG Rules', () => {
       const result = rule.analyse(doc);
 
       expect(result.passed).toBe(true);
-      expect(result.message).toBe('All inputs have associated labels');
+      expect(result.message).toBe('Todos os inputs possuem labels associados');
       expect(result.details?.totalInputs).toBe(2);
       expect(result.details?.inputsWithoutLabel).toBe(0);
     });
@@ -188,7 +188,7 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(false);
       expect(result.message).toBe(
-        '1 of 2 inputs missing explicit label association',
+        '1 de 2 inputs não possuem associação explícita de label',
       );
       expect(result.details?.totalInputs).toBe(2);
       expect(result.details?.inputsWithoutLabel).toBe(1);
@@ -212,7 +212,7 @@ describe('WCAG Rules', () => {
 
       expect(result.passed).toBe(false);
       expect(result.message).toBe(
-        '2 of 2 inputs missing explicit label association',
+        '2 de 2 inputs não possuem associação explícita de label',
       );
       expect(result.details?.totalInputs).toBe(2);
       expect(result.details?.inputsWithoutLabel).toBe(2);

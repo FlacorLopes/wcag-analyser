@@ -12,8 +12,8 @@ export class TitleRule implements WCAGRule<TitleRuleDetails> {
     return {
       passed: !!titleText,
       message: titleText
-        ? 'Title exists and is not empty'
-        : 'Title missing or empty',
+        ? 'Título existe e não está vazio'
+        : 'Título ausente ou vazio',
       details: { title: titleText || null },
     };
   }

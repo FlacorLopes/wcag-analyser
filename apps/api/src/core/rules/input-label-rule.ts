@@ -21,8 +21,8 @@ export class InputLabelRule implements WCAGRule<InputLabelRuleDetails> {
       passed: withoutLabel.length === 0,
       message:
         withoutLabel.length === 0
-          ? 'All inputs have associated labels'
-          : `${withoutLabel.length} of ${inputs.length} inputs missing explicit label association`,
+          ? 'Todos os inputs possuem labels associados'
+          : `${withoutLabel.length} de ${inputs.length} inputs não possuem associação explícita de label`,
       details: {
         totalInputs: inputs.length,
         inputsWithoutLabel: withoutLabel.length,

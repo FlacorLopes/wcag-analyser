@@ -18,8 +18,8 @@ export class ImgAltRule implements WCAGRule<ImgAltRuleDetails> {
       passed: totalIssues === 0,
       message:
         totalIssues === 0
-          ? 'All images have alt attributes'
-          : `${totalIssues} of ${images.length} images missing or have empty alt attribute`,
+          ? 'Todas as imagens possuem atributo alt'
+          : `${totalIssues} de ${images.length} imagens não possuem ou têm atributo alt vazio`,
       details: {
         totalImages: images.length,
         imagesWithoutAlt: withoutAlt.length,
