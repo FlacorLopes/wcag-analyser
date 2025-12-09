@@ -3,12 +3,15 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - "${MONGO_PORT:-27017}:27017"
     volumes:
       - mongo_data:/data/db
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: examplepassword
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:-examplepassword}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-wcag-analyser}
+    env_file:
+      - ./apps/api/.env
 
 volumes:
   mongo_data:
