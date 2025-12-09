@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useApiFetch } from '../composables/useApiFetch'
+import AnalysisResults from '../components/AnalysisResults.vue'
 
 interface RuleResult {
   passed: boolean
@@ -61,19 +62,6 @@ function analyzeUrl() {
 
   execute()
 }
-
-function getRuleIcon(passed: boolean) {
-  return passed ? '✅' : '⚠️'
-}
-
-function getRuleLabel(ruleKey: string) {
-  const labels: Record<string, string> = {
-    'title-check': 'tag <title>',
-    'img-alt-check': 'atributo alt em imagens',
-    'input-label-check': 'associação de labels com inputs',
-  }
-  return labels[ruleKey] || ruleKey
-}
 </script>
 
 <template>
@@ -105,19 +93,10 @@ function getRuleLabel(ruleKey: string) {
         {{ errorMessage }}
       </div>
 
-      <div v-if="analysisResult" class="results-section">
-        <div v-for="(result, key) in analysisResult.results" :key="key" class="result-item">
-          <span class="result-icon">{{ getRuleIcon(result.passed) }}</span>
-          <div class="result-content">
-            <p class="result-text">
-              {{ getRuleLabel(key as string) }} existe e não está vazio.
-              <span :class="result.passed ? 'status-ok' : 'status-warning'">
-                {{ result.passed ? '✓' : '⚠' }}
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>
+      <AnalysisResults
+        v-if="analysisResult"
+        :results="analysisResult.results"
+      />
 
       <RouterLink to="/history" class="button-secondary">Ver análises anteriores</RouterLink>
     </div>
