@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AnalysisGateway } from './analysis.gateway';
 import { TestFixturesController } from './test-fixtures.controller';
 import { UrlAnalysis, UrlAnalysisSchema } from './schemas/url-analysis.schema';
 
@@ -19,6 +20,6 @@ import { UrlAnalysis, UrlAnalysisSchema } from './schemas/url-analysis.schema';
     ]),
   ],
   controllers: [AppController, TestFixturesController],
-  providers: [AppService],
+  providers: [AppService, AnalysisGateway],
 })
 export class AppModule {}

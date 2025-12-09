@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { describe, beforeEach, it, expect, vi } from 'vitest';
 import { getModelToken } from '@nestjs/mongoose';
 import { UrlAnalysis } from './schemas/url-analysis.schema';
+import { AnalysisGateway } from './analysis.gateway';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -15,6 +16,10 @@ describe('AppController', () => {
     findById: vi.fn(),
   };
 
+  const mockAnalysisGateway = {
+    notifyProgress: vi.fn(),
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
@@ -23,6 +28,10 @@ describe('AppController', () => {
         {
           provide: getModelToken(UrlAnalysis.name),
           useValue: mockUrlAnalysisModel,
+        },
+        {
+          provide: AnalysisGateway,
+          useValue: mockAnalysisGateway,
         },
       ],
     }).compile();
@@ -38,11 +47,7 @@ describe('AppController', () => {
         id: '123',
         url: mockUrl,
         status: 'finished',
-        results: {
-          'title-check': { passed: true, message: 'Title exists' },
-          'img-alt-check': { passed: true, message: 'All images have alt' },
-          'input-label-check': { passed: true, message: 'All inputs labeled' },
-        },
+        createdAt: new Date(),
       };
 
       vi.spyOn(appService, 'analyzeUrl').mockResolvedValue(mockResult);

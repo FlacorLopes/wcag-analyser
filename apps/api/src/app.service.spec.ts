@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppService } from './app.service';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { describe, beforeEach, it, expect, vi } from 'vitest';
 import { getModelToken } from '@nestjs/mongoose';
 import { UrlAnalysis } from './schemas/url-analysis.schema';
+import { AnalysisGateway } from './analysis.gateway';
 
 describe('AppService (Integration)', () => {
   let service: AppService;
@@ -21,6 +22,17 @@ describe('AppService (Integration)', () => {
     return new mockUrlAnalysisModel(dto);
   };
 
+  mockUrlAnalysisModel.findById = async (id: string) => {
+    return new mockUrlAnalysisModel({
+      url: 'https://example.com',
+      status: 'pending',
+    });
+  };
+
+  const mockAnalysisGateway = {
+    notifyProgress: vi.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -28,6 +40,10 @@ describe('AppService (Integration)', () => {
         {
           provide: getModelToken(UrlAnalysis.name),
           useValue: mockUrlAnalysisModel,
+        },
+        {
+          provide: AnalysisGateway,
+          useValue: mockAnalysisGateway,
         },
       ],
     }).compile();
@@ -41,14 +57,8 @@ describe('AppService (Integration)', () => {
       const result = await service.analyzeUrl('https://example.com');
 
       expect(result.url).toBe('https://example.com');
-      expect(result.status).toBe('finished');
-      expect(result.results).toBeDefined();
-      expect(result.results['title-check']).toBeDefined();
-      expect(result.results['img-alt-check']).toBeDefined();
-      expect(result.results['input-label-check']).toBeDefined();
-
-      // example.com typically has a title
-      expect(result.results['title-check'].passed).toBe(true);
+      expect(result.status).toBe('pending');
+      expect(result.id).toBeDefined();
     });
   });
 });
