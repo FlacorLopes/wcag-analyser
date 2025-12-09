@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
+import { WsAdapter } from '@nestjs/platform-ws';
 import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module';
@@ -8,6 +9,7 @@ import {
   MongoDBContainer,
   StartedMongoDBContainer,
 } from '@testcontainers/mongodb';
+import { AddressInfo } from 'node:net';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
@@ -18,17 +20,17 @@ describe('AppController (e2e)', () => {
     // Start MongoDB container
     mongoContainer = await new MongoDBContainer('mongo:7').start();
     process.env.MONGO_URI = mongoContainer.getConnectionString();
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useWebSocketAdapter(new WsAdapter(app));
     await app.init();
     await app.listen(0); // Listen on random available port
 
     const server = app.getHttpServer();
-    const address = server.address();
+    const address = server.address() as AddressInfo;
     const port = typeof address === 'object' && address ? address.port : 3000;
     baseUrl = `http://127.0.0.1:${port}`;
   }, 120000); // 2 minutes timeout for container startup
@@ -51,10 +53,35 @@ describe('AppController (e2e)', () => {
       .expect(201);
 
     expect(response.body).toHaveProperty('url', testUrl);
-    expect(response.body).toHaveProperty('results');
-    expect(response.body.results['title-check'].passed).toBe(true);
-    expect(response.body.results['img-alt-check'].passed).toBe(true);
-    expect(response.body.results['input-label-check'].passed).toBe(true);
+
+    let analysis;
+    for (let i = 0; i < 60; i++) {
+      const listResponse = await request(app.getHttpServer())
+        .get('/api/analyses')
+        .expect(200);
+
+      analysis = listResponse.body.items.find(
+        (item: any) => item._id === response.body.id,
+      );
+      if (
+        analysis &&
+        (analysis.status === 'finished' || analysis.status === 'failed')
+      ) {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
+    if (analysis?.status === 'failed') {
+      console.error('Analysis failed:', analysis.errorMessage);
+    }
+
+    expect(analysis).toBeDefined();
+    expect(analysis.status).toBe('finished');
+    expect(analysis).toHaveProperty('results');
+    expect(analysis.results['title-check'].passed).toBe(true);
+    expect(analysis.results['img-alt-check'].passed).toBe(true);
+    expect(analysis.results['input-label-check'].passed).toBe(true);
   });
 
   it('/api/analyze (POST) - should detect accessibility issues', async () => {
@@ -66,10 +93,35 @@ describe('AppController (e2e)', () => {
       .expect(201);
 
     expect(response.body).toHaveProperty('url', testUrl);
-    expect(response.body).toHaveProperty('results');
-    expect(response.body.results['title-check'].passed).toBe(false);
-    expect(response.body.results['img-alt-check'].passed).toBe(false);
-    expect(response.body.results['input-label-check'].passed).toBe(false);
+
+    let analysis;
+    for (let i = 0; i < 60; i++) {
+      const listResponse = await request(app.getHttpServer())
+        .get('/api/analyses')
+        .expect(200);
+
+      analysis = listResponse.body.items.find(
+        (item: any) => item._id === response.body.id,
+      );
+      if (
+        analysis &&
+        (analysis.status === 'finished' || analysis.status === 'failed')
+      ) {
+        break;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+
+    if (analysis?.status === 'failed') {
+      console.error('Analysis failed:', analysis.errorMessage);
+    }
+
+    expect(analysis).toBeDefined();
+    expect(analysis.status).toBe('finished');
+    expect(analysis).toHaveProperty('results');
+    expect(analysis.results['title-check'].passed).toBe(false);
+    expect(analysis.results['img-alt-check'].passed).toBe(false);
+    expect(analysis.results['input-label-check'].passed).toBe(false);
   });
 
   it('/api/analyses (GET) - should return paginated analyses', async () => {
