@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useWebSocket } from '@vueuse/core'
 import { useApiFetch } from '../composables/useApiFetch'
 import AnalysisResults from '../components/AnalysisResults.vue'
 
@@ -11,29 +12,106 @@ interface RuleResult {
 }
 
 interface AnalysisResult {
+  id: string
   url: string
   status: string
-  results: Record<string, RuleResult>
+  results?: Record<string, RuleResult>
 }
 
 const payload = reactive({
   url: '',
 })
 const validationError = ref<string | null>(null)
+const currentAnalysisId = ref<string | null>(null)
+const analysisStatus = ref<string | null>(null)
+const results = ref<Record<string, RuleResult> | null>(null)
+
+const getWsUrl = () => {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+  return baseUrl.replace(/^http/, 'ws')
+}
+
+const { data: wsData } = useWebSocket(getWsUrl(), {
+  autoReconnect: true,
+})
+
 const {
   data: analysisResult,
   error,
   isFetching: loading,
   execute,
-} = useApiFetch('analyze', {
+} = useApiFetch('/api/analyze', {
   immediate: false,
 })
   .post(payload)
   .json<AnalysisResult>()
 
+watch(analysisResult, (newVal) => {
+  if (newVal) {
+    currentAnalysisId.value = newVal.id
+    analysisStatus.value = newVal.status
+    if (newVal.results) {
+      results.value = newVal.results
+    }
+  }
+})
+
+watch(wsData, (newValue) => {
+  if (!newValue || !currentAnalysisId.value) return
+  try {
+    const message = JSON.parse(newValue)
+    if (
+      message.event === 'analysis-progress' &&
+      message.data.analysisId === currentAnalysisId.value
+    ) {
+      analysisStatus.value = message.data.status
+      if (message.data.results) {
+        results.value = message.data.results
+      }
+      if (message.data.errorMessage) {
+        // TODO: handle error message
+      }
+    }
+  } catch (e) {
+    console.error('Error parsing WS message', e)
+  }
+})
+
+const isProcessing = computed(() => {
+  return !!(
+    analysisStatus.value &&
+    analysisStatus.value !== 'finished' &&
+    analysisStatus.value !== 'failed'
+  )
+})
+
+const finalResults = computed(() => {
+  return results.value
+})
+
+const statusMessage = computed(() => {
+  switch (analysisStatus.value) {
+    case 'pending':
+      return 'Aguardando início...'
+    case 'fetching':
+      return 'Baixando conteúdo da página...'
+    case 'ongoing':
+      return 'Verificando regras de acessibilidade...'
+    case 'finished':
+      return 'Análise concluída!'
+    case 'failed':
+      return 'Falha na análise.'
+    default:
+      return ''
+  }
+})
+
 const errorMessage = computed(() => {
   if (error.value) {
-    return 'Erro ao analisar a URL. Verifique se a API está rodando.'
+    return 'Erro ao iniciar a análise. Verifique se a API está rodando.'
+  }
+  if (analysisStatus.value === 'failed') {
+    return 'Ocorreu um erro durante a análise da URL.'
   }
   return null
 })
@@ -60,6 +138,10 @@ function analyzeUrl() {
     return
   }
 
+  currentAnalysisId.value = null
+  analysisStatus.value = null
+  results.value = null
+
   execute()
 }
 </script>
@@ -78,11 +160,15 @@ function analyzeUrl() {
           class="input"
           placeholder="https://www.example.com"
           @keyup.enter="analyzeUrl"
-          :disabled="loading"
+          :disabled="loading || isProcessing"
         />
-        <button class="button" @click="analyzeUrl" :disabled="loading || !payload.url.trim()">
-          {{ loading ? 'Analisando...' : 'Analisar →' }}
+        <button class="button" @click="analyzeUrl" :disabled="loading || isProcessing || !payload.url.trim()">
+          {{ loading || isProcessing ? 'Analisando...' : 'Analisar →' }}
         </button>
+      </div>
+
+      <div v-if="isProcessing" class="status-message">
+        <span class="spinner">⏳</span> {{ statusMessage }}
       </div>
 
       <div v-if="validationError" class="validation-message">
@@ -94,8 +180,8 @@ function analyzeUrl() {
       </div>
 
       <AnalysisResults
-        v-if="analysisResult"
-        :results="analysisResult.results"
+        v-if="finalResults"
+        :results="finalResults"
       />
 
       <RouterLink to="/history" class="button-secondary">Ver análises anteriores</RouterLink>
@@ -267,5 +353,27 @@ function analyzeUrl() {
 .button-secondary:hover {
   background: #4a90e2;
   color: white;
+}
+
+.status-message {
+  padding: 1rem;
+  background-color: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 8px;
+  color: #0d47a1;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spinner {
+  animation: spin 2s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>

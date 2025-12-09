@@ -323,7 +323,7 @@ describe('AnalyserView', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(/erro ao analisar a url/i),
+          screen.getByText(/erro ao iniciar a análise/i),
         ).toBeInTheDocument()
       })
     })

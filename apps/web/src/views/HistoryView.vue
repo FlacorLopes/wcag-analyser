@@ -31,7 +31,7 @@ const { currentPage, currentPageSize, isFirstPage, isLastPage, prev, next } = us
   page,
   pageSize: limit,
 })
-const url = computed(() => `analyses?page=${currentPage.value}&limit=${currentPageSize.value}`)
+const url = computed(() => `/api/analyses?page=${currentPage.value}&limit=${currentPageSize.value}`)
 const { data, isFetching } = useApiFetch(url, {
   immediate: true,
   refetch: true,
