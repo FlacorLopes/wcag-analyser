@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useApiFetch } from '../composables/useApiFetch'
 
 interface RuleResult {
@@ -17,7 +17,7 @@ interface AnalysisResult {
 const payload = reactive({
   url: '',
 })
-
+const validationError = ref<string | null>(null)
 const {
   data: analysisResult,
   error,
@@ -36,16 +36,36 @@ const errorMessage = computed(() => {
   return null
 })
 
-const analyzeUrl = () => {
-  if (!payload.url.trim()) return
+function isValidUrl(urlString: string): boolean {
+  try {
+    const url = new URL(urlString)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+function analyzeUrl() {
+  validationError.value = null
+
+  if (!payload.url.trim()) {
+    validationError.value = 'Por favor, insira uma URL'
+    return
+  }
+
+  if (!isValidUrl(payload.url)) {
+    validationError.value = 'Por favor, insira uma URL válida (ex: https://www.example.com)'
+    return
+  }
+
   execute()
 }
 
-const getRuleIcon = (passed: boolean) => {
+function getRuleIcon(passed: boolean) {
   return passed ? '✅' : '⚠️'
 }
 
-const getRuleLabel = (ruleKey: string) => {
+function getRuleLabel(ruleKey: string) {
   const labels: Record<string, string> = {
     'title-check': 'tag <title>',
     'img-alt-check': 'atributo alt em imagens',
@@ -76,16 +96,16 @@ const getRuleLabel = (ruleKey: string) => {
         </button>
       </div>
 
+      <div v-if="validationError" class="validation-message">
+        {{ validationError }}
+      </div>
+
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
 
       <div v-if="analysisResult" class="results-section">
-        <div
-          v-for="(result, key) in analysisResult.results"
-          :key="key"
-          class="result-item"
-        >
+        <div v-for="(result, key) in analysisResult.results" :key="key" class="result-item">
           <span class="result-icon">{{ getRuleIcon(result.passed) }}</span>
           <div class="result-content">
             <p class="result-text">
@@ -229,6 +249,15 @@ const getRuleLabel = (ruleKey: string) => {
 .status-warning {
   color: #ff9800;
   font-weight: bold;
+}
+
+.validation-message {
+  padding: 1rem;
+  background-color: #fff3e0;
+  border: 1px solid #ff9800;
+  border-radius: 8px;
+  color: #e65100;
+  font-size: 0.95rem;
 }
 
 .error-message {
