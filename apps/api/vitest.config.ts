@@ -8,6 +8,7 @@ export default defineConfig({
     include: ['**/*.e2e-spec.ts', '**/*.spec.ts'],
   },
   plugins: [
+    //@ts-expect-error swc
     swc.vite({
       module: { type: 'es6' },
     }),
