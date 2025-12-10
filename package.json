@@ -11,9 +11,19 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{ts,tsx,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.0.15",
     "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "prettier": "^3.0.0",
     "turbo": "^2.0.0",
     "vitest": "^4.0.14"
