@@ -200,7 +200,7 @@ function analyzeUrl() {
   flex-direction: column;
   gap: 2rem;
   background: white;
-  border: 2px solid #4a90e2;
+  border: 2px solid #1d4ed8;
   border-radius: 12px;
   padding: 3rem;
   max-width: 680px;
@@ -210,7 +210,7 @@ function analyzeUrl() {
 
 .title {
   font-size: 2.5rem;
-  color: #4a90e2;
+  color: #1d4ed8;
   text-align: center;
   margin: 0;
   font-weight: 400;
@@ -224,13 +224,13 @@ function analyzeUrl() {
 
 .label {
   font-size: 1rem;
-  color: #4a90e2;
+  color: #1d4ed8;
   margin: 0;
 }
 
 .input {
   padding: 1rem;
-  border: 1px solid #4a90e2;
+  border: 1px solid #1d4ed8;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
@@ -238,11 +238,11 @@ function analyzeUrl() {
 }
 
 .input::placeholder {
-  color: #ccc;
+  color: #666;
 }
 
 .input:focus {
-  border-color: #357abd;
+  border-color: #1e40af;
 }
 
 .input:disabled {
@@ -253,9 +253,9 @@ function analyzeUrl() {
 .button {
   padding: 1rem 2rem;
   background: white;
-  border: 1px solid #4a90e2;
+  border: 1px solid #1d4ed8;
   border-radius: 8px;
-  color: #4a90e2;
+  color: #1d4ed8;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -263,7 +263,7 @@ function analyzeUrl() {
 }
 
 .button:hover:not(:disabled) {
-  background: #4a90e2;
+  background: #1d4ed8;
   color: white;
 }
 
@@ -277,7 +277,7 @@ function analyzeUrl() {
   flex-direction: column;
   gap: 0.5rem;
   padding: 1.5rem;
-  border: 1px solid #4a90e2;
+  border: 1px solid #1d4ed8;
   border-radius: 8px;
 }
 
@@ -298,7 +298,7 @@ function analyzeUrl() {
 
 .result-text {
   margin: 0;
-  color: #4a90e2;
+  color: #1d4ed8;
   font-size: 0.95rem;
   line-height: 1.5;
 }
@@ -334,9 +334,9 @@ function analyzeUrl() {
 .button-secondary {
   padding: 1rem 2rem;
   background: white;
-  border: 1px solid #4a90e2;
+  border: 1px solid #1d4ed8;
   border-radius: 8px;
-  color: #4a90e2;
+  color: #1d4ed8;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -347,7 +347,7 @@ function analyzeUrl() {
 }
 
 .button-secondary:hover {
-  background: #4a90e2;
+  background: #1d4ed8;
   color: white;
 }
 

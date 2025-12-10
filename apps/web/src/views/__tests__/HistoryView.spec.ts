@@ -278,6 +278,37 @@ describe('HistoryView', () => {
 
       expect(screen.queryByText('Detalhes da Análise')).not.toBeInTheDocument()
     })
+
+    it('should close modal when pressing Escape key', async () => {
+      const user = userEvent.setup()
+
+      mockData.value = {
+        items: [
+          {
+            _id: '1',
+            url: 'https://example.com',
+            status: 'finished',
+            createdAt: new Date().toISOString(),
+            results: {},
+          },
+        ],
+        total: 1,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      }
+
+      render(HistoryView)
+
+      const viewButton = screen.getByRole('button', { name: /^Ver$/ })
+      await user.click(viewButton)
+
+      expect(screen.getByText('Detalhes da Análise')).toBeInTheDocument()
+
+      await user.keyboard('{Escape}')
+
+      expect(screen.queryByText('Detalhes da Análise')).not.toBeInTheDocument()
+    })
   })
 
   suite('Empty State', () => {

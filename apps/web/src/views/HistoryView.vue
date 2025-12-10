@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useOffsetPagination, useUrlSearchParams } from '@vueuse/core'
+import { useOffsetPagination, useUrlSearchParams, onKeyStroke } from '@vueuse/core'
 import { useApiFetch } from '../composables/useApiFetch'
-import { computed, watch, ref } from 'vue'
+import { computed, watch, ref, nextTick } from 'vue'
 import AnalysisResults from '../components/AnalysisResults.vue'
 
 interface Analysis {
@@ -38,14 +38,34 @@ const { data, isFetching } = useApiFetch(url, {
 }).json<AnalysesResponse>()
 
 const selectedAnalysis = ref<Analysis | null>(null)
+const closeButtonRef = ref<HTMLButtonElement | null>(null)
+const lastFocusedElement = ref<HTMLElement | null>(null)
 
 function selectAnalysis(analysis: Analysis) {
+  lastFocusedElement.value = document.activeElement as HTMLElement
   selectedAnalysis.value = analysis
 }
 
 function closeAnalysis() {
   selectedAnalysis.value = null
+  nextTick(() => {
+    lastFocusedElement.value?.focus()
+  })
 }
+
+watch(selectedAnalysis, async (val) => {
+  if (val) {
+    await nextTick()
+    closeButtonRef.value?.focus()
+  }
+})
+
+onKeyStroke('Escape', (e) => {
+  if (selectedAnalysis.value) {
+    e.preventDefault()
+    closeAnalysis()
+  }
+})
 
 watch(currentPage, (val) => {
   params.page = String(val)
@@ -125,11 +145,25 @@ watch(data, (newData) => {
       </div>
     </div>
 
-    <div v-if="selectedAnalysis" class="modal-overlay" @click="closeAnalysis">
+    <div
+      v-if="selectedAnalysis"
+      class="modal-overlay"
+      @click="closeAnalysis"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h2>Detalhes da Análise</h2>
-          <button class="close-button" @click="closeAnalysis" aria-label="Fechar detalhes">×</button>
+          <h2 id="modal-title">Detalhes da Análise</h2>
+          <button
+            ref="closeButtonRef"
+            class="close-button"
+            @click="closeAnalysis"
+            aria-label="Fechar detalhes"
+          >
+            ×
+          </button>
         </div>
         <p><strong>URL:</strong> {{ selectedAnalysis.url }}</p>
         <p>
@@ -180,7 +214,7 @@ td {
 .action-button {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
-  background-color: #4a90e2;
+  background-color: #1d4ed8;
   color: white;
   border: none;
   border-radius: 4px;
@@ -188,7 +222,7 @@ td {
 }
 
 .action-button:hover {
-  background-color: #357abd;
+  background-color: #1e40af;
 }
 
 .pagination {
@@ -202,9 +236,9 @@ td {
 .pagination-button {
   padding: 0.5rem 1rem;
   background: white;
-  border: 1px solid #4a90e2;
+  border: 1px solid #1d4ed8;
   border-radius: 8px;
-  color: #4a90e2;
+  color: #1d4ed8;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -212,7 +246,7 @@ td {
 }
 
 .pagination-button:hover:not(:disabled) {
-  background: #4a90e2;
+  background: #1d4ed8;
   color: white;
 }
 
@@ -261,6 +295,26 @@ td {
   cursor: pointer;
   padding: 0;
   line-height: 1;
+  color: #666;
+  border-radius: 4px;
+  transition: all 0.2s;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.close-button:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 2px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
 }
 
 .empty-state {
