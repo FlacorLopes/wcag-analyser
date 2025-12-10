@@ -7,7 +7,7 @@ import type {
 } from '@wcag-analyser/shared'
 
 defineProps<{
-  results: Record<string, RuleResult<any>>
+  results: Record<string, RuleResult<unknown>>
 }>()
 
 function getRuleIcon(passed: boolean) {
@@ -47,10 +47,7 @@ function getRuleLabel(ruleKey: string) {
         </div>
 
         <!-- Details for Images -->
-        <div
-          v-if="key === 'img-alt-check' && result.details"
-          class="details-box"
-        >
+        <div v-if="key === 'img-alt-check' && result.details" class="details-box">
           <p>
             Total de imagens:
             {{ (result.details as ImgAltRuleDetails).totalImages }}
@@ -66,10 +63,7 @@ function getRuleLabel(ruleKey: string) {
         </div>
 
         <!-- Details for Inputs -->
-        <div
-          v-if="key === 'input-label-check' && result.details"
-          class="details-box"
-        >
+        <div v-if="key === 'input-label-check' && result.details" class="details-box">
           <p>
             Total de inputs:
             {{ (result.details as InputLabelRuleDetails).totalInputs }}

@@ -10,7 +10,7 @@ interface AnalysisResult {
   id: string
   url: string
   status: string
-  results?: Record<string, RuleResult<any>>
+  results?: Record<string, RuleResult<unknown>>
 }
 
 const payload = reactive({
@@ -19,9 +19,7 @@ const payload = reactive({
 const validationError = ref<string | null>(null)
 const currentAnalysisId = ref<string | null>(null)
 const analysisStatus = ref<string | null>(null)
-const results = ref<Record<string, RuleResult<any>> | null>(null)
-
-
+const results = ref<Record<string, RuleResult<unknown>> | null>(null)
 
 const { data: wsData } = useWebSocket(import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:3000', {
   autoReconnect: true,

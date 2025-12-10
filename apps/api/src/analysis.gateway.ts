@@ -25,7 +25,7 @@ export class AnalysisGateway
     console.log('Client disconnected');
   }
 
-  notifyProgress(analysisId: string, data: any) {
+  notifyProgress(analysisId: string, data: Record<string, unknown>) {
     this.server.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(

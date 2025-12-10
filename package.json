@@ -12,8 +12,15 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx,vue}": [
-      "eslint --fix",
+    "apps/api/**/*.{ts,tsx}": [
+      "eslint --config apps/api/eslint.config.mjs --fix",
+      "prettier --write"
+    ],
+    "apps/web/**/*.{ts,tsx,vue}": [
+      "eslint --config apps/web/eslint.config.ts --fix",
+      "prettier --write"
+    ],
+    "packages/shared/**/*.{ts,tsx}": [
       "prettier --write"
     ],
     "*.{json,md}": [
