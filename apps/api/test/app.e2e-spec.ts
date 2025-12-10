@@ -10,11 +10,15 @@ import {
   StartedMongoDBContainer,
 } from '@testcontainers/mongodb';
 import { AddressInfo } from 'node:net';
+import { getModelToken } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { UrlAnalysis } from '../src/schemas/url-analysis.schema';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
   let baseUrl: string;
   let mongoContainer: StartedMongoDBContainer;
+  let urlAnalysisModel: Model<UrlAnalysis>;
 
   beforeAll(async () => {
     process.env.NODE_ENV = 'test';
@@ -31,6 +35,9 @@ describe('AppController (e2e)', () => {
     }).compile();
     app = moduleFixture.createNestApplication();
     app.useWebSocketAdapter(new WsAdapter(app));
+    urlAnalysisModel = moduleFixture.get<Model<UrlAnalysis>>(
+      getModelToken(UrlAnalysis.name),
+    );
     await app.init();
     await app.listen(0); // Listen on random available port
 
@@ -152,5 +159,13 @@ describe('AppController (e2e)', () => {
     expect(response.body).toHaveProperty('page', 1);
     expect(response.body).toHaveProperty('limit', 2);
     expect(response.body).toHaveProperty('totalPages');
+
+    for (let i = 0; i < 60; i++) {
+      const pendingCount = await urlAnalysisModel.countDocuments({
+        status: { $in: ['pending', 'fetching', 'ongoing'] },
+      });
+      if (pendingCount === 0) break;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
   });
 });
