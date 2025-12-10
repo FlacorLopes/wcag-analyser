@@ -12,6 +12,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^4.0.15",
     "husky": "^9.1.7",
     "prettier": "^3.0.0",
     "turbo": "^2.0.0",

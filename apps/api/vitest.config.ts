@@ -7,6 +7,9 @@ export default defineConfig({
     root: './',
     hookTimeout: 120000, // Testcontainers can take time to start
     testTimeout: 30000,
+    coverage: {
+      provider: 'v8',
+    },
   },
   plugins: [
     //@ts-expect-error  swc types messing
