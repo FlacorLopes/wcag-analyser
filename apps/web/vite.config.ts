@@ -8,7 +8,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 export default defineConfig({
   plugins: [
     vue(),
-    vueDevTools(),
+    // vueDevTools(),
   ],
   resolve: {
     alias: {
@@ -16,6 +16,6 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3001,
+    port: process.env.WEB_PORT ? Number(process.env.WEB_PORT) : 3001,
   }
 })

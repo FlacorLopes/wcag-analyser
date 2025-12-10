@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test'
 
-const API_URL = 'http://localhost:3000'
+const API_URL = process.env.VITE_API_BASE_URL || 'http://localhost:3000'
 
 test.describe('WCAG Analyser E2E', () => {
   test('should analyze accessible page and show success results', async ({ page }) => {
+
     await page.goto('/')
 
     const targetUrl = `${API_URL}/test-fixtures/accessible.html`

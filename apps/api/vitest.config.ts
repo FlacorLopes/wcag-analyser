@@ -12,7 +12,6 @@ export default defineConfig({
     },
   },
   plugins: [
-    //@ts-expect-error  swc types messing
     swc.vite({
       module: { type: 'es6' },
     }),

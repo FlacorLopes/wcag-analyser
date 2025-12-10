@@ -21,12 +21,9 @@ const currentAnalysisId = ref<string | null>(null)
 const analysisStatus = ref<string | null>(null)
 const results = ref<Record<string, RuleResult<any>> | null>(null)
 
-const getWsUrl = () => {
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
-  return baseUrl.replace(/^http/, 'ws')
-}
 
-const { data: wsData } = useWebSocket(getWsUrl(), {
+
+const { data: wsData } = useWebSocket(import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:3000', {
   autoReconnect: true,
 })
 
