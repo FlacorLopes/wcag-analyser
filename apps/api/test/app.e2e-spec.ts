@@ -17,13 +17,18 @@ describe('AppController (e2e)', () => {
   let mongoContainer: StartedMongoDBContainer;
 
   beforeAll(async () => {
-    // Start MongoDB container
+    process.env.NODE_ENV = 'test';
+
     mongoContainer = await new MongoDBContainer('mongo:7').start();
-    process.env.MONGO_URI = mongoContainer.getConnectionString();
+
+    const rawUri = mongoContainer.getConnectionString();
+    const uri = `${rawUri}${rawUri.includes('?') ? '&' : '?'}directConnection=true`;
+
+    process.env.MONGO_URI = uri;
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
     app = moduleFixture.createNestApplication();
     app.useWebSocketAdapter(new WsAdapter(app));
     await app.init();

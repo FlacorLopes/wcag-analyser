@@ -47,7 +47,7 @@ export class AppService {
     if (!analysis) return;
 
     try {
-      void this.updateStatus(analysis, AnalysisStatus.FETCHING);
+      await this.updateStatus(analysis, AnalysisStatus.FETCHING);
 
       const response = await fetch(url);
       if (!response.ok) {

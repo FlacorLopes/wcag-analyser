@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,8 +13,17 @@ import { UrlAnalysis, UrlAnalysisSchema } from './schemas/url-analysis.schema';
       isGlobal: true,
       envFilePath: '.env',
       expandVariables: true,
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI!),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const uri =
+          configService.get<string>('MONGO_URI') || process.env.MONGO_URI;
+        return { uri };
+      },
+    }),
     MongooseModule.forFeature([
       { name: UrlAnalysis.name, schema: UrlAnalysisSchema },
     ]),

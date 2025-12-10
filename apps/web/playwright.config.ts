@@ -33,7 +33,7 @@ export default defineConfig({
       url: `http://localhost:${API_PORT}/api/analyses`,
       reuseExistingServer: !process.env.CI,
       timeout: 120 * 1000,
-      stdout: 'pipe',
+      stdout: 'ignore',
     },
     {
       command: `pnpm dev `,
