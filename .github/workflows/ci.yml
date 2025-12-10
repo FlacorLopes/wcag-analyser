@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-test:
@@ -41,10 +41,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Create API .env file
+        run: |
+          echo "MONGO_URI=mongodb://root:examplepassword@localhost:27017/wcag-analyser?authSource=admin" > apps/api/.env
       - name: Lint
         run: pnpm lint
 
       - name: Test
         run: pnpm test
-        env:
-          MONGO_URI: ${{ secrets.MONGO_URI }}
+
