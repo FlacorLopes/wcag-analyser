@@ -157,7 +157,11 @@ function analyzeUrl() {
           @keyup.enter="analyzeUrl"
           :disabled="loading || isProcessing"
         />
-        <button class="button" @click="analyzeUrl" :disabled="loading || isProcessing || !payload.url.trim()">
+        <button
+          class="button"
+          @click="analyzeUrl"
+          :disabled="loading || isProcessing || !payload.url.trim()"
+        >
           {{ loading || isProcessing ? 'Analisando...' : 'Analisar →' }}
         </button>
       </div>
@@ -174,10 +178,7 @@ function analyzeUrl() {
         {{ errorMessage }}
       </div>
 
-      <AnalysisResults
-        v-if="finalResults"
-        :results="finalResults"
-      />
+      <AnalysisResults v-if="finalResults" :results="finalResults" />
 
       <RouterLink to="/history" class="button-secondary">Ver análises anteriores</RouterLink>
     </div>
@@ -368,7 +369,11 @@ function analyzeUrl() {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

@@ -66,7 +66,7 @@ watch(data, (newData) => {
   <div class="history-view">
     <h1>Histórico de Análises</h1>
 
-    <div v-if="isFetching" class="loading">Carregando...</div>
+    <div v-if="isFetching" role="status" aria-live="polite" class="loading">Carregando...</div>
 
     <div v-else-if="data" class="content">
       <div v-if="data.items.length === 0" class="empty-state">

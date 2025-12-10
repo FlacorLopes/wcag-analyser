@@ -25,7 +25,7 @@ function getRuleLabel(ruleKey: string) {
 </script>
 
 <template>
-  <div class="results-section">
+  <div class="results-section" data-testid="results-section">
     <div v-for="(result, key) in results" :key="key" class="result-item">
       <span class="result-icon">{{ getRuleIcon(result.passed) }}</span>
       <div class="result-content">
