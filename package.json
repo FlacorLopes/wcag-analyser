@@ -31,6 +31,7 @@
     "@vitest/coverage-v8": "^4.0.15",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "npm-run-all2": "^8.0.4",
     "prettier": "^3.0.0",
     "turbo": "^2.0.0",
     "vitest": "^4.0.14"
